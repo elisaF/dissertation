@@ -1,0 +1,149 @@
+\chapter{Proposed Work}
+\label{ch:proposed}
+
+
+\section{Chapter Introduction}
+
+\begin{table}[t]
+    \centering
+    \begin{tabular}{p{11cm}}
+    \toprule
+    \textit{Mr. Engel:} So do you adjust your algorithms to prevent individuals interested in violence or nefarious activities from being connected with other like-minded individuals?
+
+\textit{Mr. Zuckerberg:} \textbf{Sorry. Could you repeat that?} \texttt{request for information} or \texttt{stall}
+
+\textit{Mr. Engel:} Do you adjust your algorithms to prevent individuals interested in violence or bad activities from being connected with other like-minded individuals?
+
+\textit{Mr. Zuckerberg:} \textbf{Congressman, yes. That is certainly an important thing that we need to do.} \texttt{acknowledge} or \texttt{answer}\\
+\midrule
+\textit{Mr. Levin:} [...] The agenda, and I have known people from the EPA in past administrations, both Republican and Democratic--their agenda, at least their original agenda as intended from President Nixon and both the Democrats and Republicans who supported the Clean Air Act and the Clean Water Act at the time, was simply to protect human health and the environment.    On the other hand, Dr. Dayaratna, I find your agenda perhaps a bit more suspect. So, please answer yes or no, just yes or no. Do studies \underline{funded by fossil fuel money} have an agenda?
+
+\textit{Dr. Dayaratna:} \textbf{I am sorry, Congressman. I cannot answer that question because that has nothing to do with my research, so---}\\
+    \bottomrule
+    \end{tabular}
+    \caption{Top: examples of answers (bold) that could have multiple interpretations. Bottom: example of a question with a presupposition (underlined), which is not accepted by the respondent and results in a non-answer (bold).}
+    \label{tab:example}
+\end{table}
+
+Armed with insights from the negative results of the annotation experiments that discourse structures cannot be learned in an unsupervised fashion while annotating discourse is a subjective and ambiguous task, my proposed work addresses three pieces missing from most existing discourse theories. First, discourse judgements are not solely from the point of view of the writer, but also of the reader. Second, the reader is biased, and their beliefs influence how they interpret the discourse of a text. Third, a given text can have multiple, valid discourse labels, depending on the reader.\footnote{PDTB allows for multiple labels, but was used as a last resort when annotators could not agree \citep{Versley:2011}.} These aspects are captured well in the theoretical work of \citet{Asher:2018} that frames conversations as a game of exchanging messages, where the reader is a judge of the game's success. I propose to create a new dataset that allows for multiple labels on a single item, and new tasks for predicting these labels first using text alone, and then using information from the judges (the annotators). Because ambiguity and subjectivity are both more prevalent and easier to identify in dialogue vs. monologue and the taxonomies of discourse relations are onerous for a crowd-sourced worker to learn, I focus my dataset on conversations that are labeled with speech acts.
+
+TODO: add blurb about speec acts
+
+\section{Background}
+
+\subsection{Discourse Ambiguity} Several works have recognized the inherent ambiguity of discourse, ranging from coreference resolution to rhetorical structures in the three major frameworks of RST, SDRT, and PDTB \citep{Poesio:2019,Das:2017,Asher:2003,Versley:2011}. 
+
+
+TODO: add more details about what the ambiguities are and how they're currently handled 
+
+TODO: cite Debopam Das 2017
+To handle this ambiguity, many propose underspecified structures that leave the ambiguous part of the discourse unresolved. However, \citet{Webber:2012} argues that variability in the annotation of PDTB relations is not caused by genuine ambiguities, but instead is a result of a lack of deeper understanding of how to comprehensively annotate discourse. While I agree some discrepancies could be resolved by better annotation, I nevertheless believe a single text can be interpreted to have multiple valid discourse structures. 
+
+
+\subsection{Conversation as a game} In \citet{Asher:2018}, conversations are presented as message exchange games. The players (or conversants) each have their own conversational goal, while a third party, the judge, evaluates the success 
+TODO: clarify what success is
+TODO: cite more papers from Asher \& Paul- the one that focuses on theory and one on ambiguity
+
+. Importantly, the judge is biased: different judges can have different interpretations of the same text, depending on their beliefs and personal preferences. As the conversation progresses, each turn in the conversation is evaluated by the judge and contributes to alternate histories of the entire conversation. This framework can be extended beyond dialogue and applied to more expository text where there is only one player. In this work, I focus on question-answer dialogues where I believe ambiguity is more prevalent and easier to annotate. 
+%In future work, I would explore other genres as \cite{Das:2017}  Even on less controversial texts like news reports, agreement by expert RST annotators is fairly low— Das et al. 2017
+
+\section{Short Term}
+\subsection{Dataset: Q\&A in Congressional Hearings}
+A first step in operationalizing the key parts of conversations-as-games theory is to find an appropriate dataset. The desiderata for the data are: (i) must contain controversy identifiable by a crowd-sourced worker, (ii) documents must contain a strong signal of ambiguity (more than 1/10 of the statements must be ambiguous), (iii) the data must be plentiful enough for use in a neural network model (more than 1,000 documents). Transcripts of congressional hearings, in particular the question-answer portions, fit these requirements: (i) most hearings are politically polarized, (ii) a preliminary analysis of two transcripts shows sufficient ambiguity (60\% and 12\%, respectively), (iii) over 5,000 transcripts exist in 2018-2019 alone.
+
+Table \ref{tab:example} contains excerpts from two separate congressional hearings. The first example illustrates how responses to questions are sometimes ambiguous (here analyzed as speech acts): Zuckerberg's first response could be interpreted as either a \emph{request for information} if you believe he is being sincere, or as \emph{stalling} for time if you believe he is being evasive. His second response can be interpreted either as an \emph{acknowledgement} that Zuckerberg has now understood the question, or as an actual (affirmative) \emph{answer} to Engel's question about adjusting the algorithms. The second example illustrates how the questions themselves often have politically-charged presuppositions, which cannot be answered in a straightforward manner if the respondent wishes to reject the presupposition. These questions often lead to indirect or even non-answers.
+
+\subsection{New taxonomy for subjective discourse}
+Existing taxonomies of discourse relations abound, including RST, PDTB, SDRT, and even those within RST are further modified depending on the corpus. However, we argue here that none of these taxonomies will suit our purpose of allowing untrained annotators to label ambiguities in dialogues.
+
+In \cite{Asher:2018}, the authors work through an example of discourse ambiguity using underspecified logical forms in SDRT. Similar to the congressional hearings, the ambiguity stems from a controversial questioning, in this case between a reporter (Rachel) and a spokesperson for a Senator:
+
+\begin{enumerate}
+\item \label{ex:1}
+\begin{enumerate}
+\setlength\itemsep{0em}
+ \item Reporter: On a different subject is there a reason that the Senator won’t say whether or not someone else bought some suits for him? \label{ex:1a}
+\item Spokesperson: Rachel, the Senator has reported every gift he has ever received. \label{ex:1b}
+\end{enumerate}
+\end{enumerate}
+
+They posit two judges: one who assumes the spokesperson is honest and the other dishonest. In the case of an honest spokesperson, their utterance in \ref{ex:1b} is interpreted as an indirect answer with the SDRT relation of \emph{Indirect Question Answer Pair}. If they are dishonest, their utterance is interpreted as non-cooperative, with the SDRT relation of \emph{Background} (where \ref{ex:1a} ``provides information about the surrounding state of affair'' in which \ref{ex:1b} occurred). It is less clear why this particular relation type is chosen, and requires a level of familiarity with SDRT that could not be achieved with crowd-sourced workers. It is clear that the distinction rests on whether the spokesperson is providing an answer (albeit indirect) or a non-answer. This type of judgement is much easier for a minimally-trained annotator to make. I therefore propose a much simpler taxonomy of labels, based on whether the question was answered, whether the answer was direct, and a subset of speech acts derived from the ISO 24617-2 standard, which builds upon annotation schemes used in well-known dialogue resources such as the SwitchBoard Corpus and DAMSL \citep{Bunt:2018}. Because questions heavily influence the type of answer, I also plan to annotate questions with, minimally, whether they contain presuppositions (and in turn, the answer is labeled with whether it is accepting or rejecting a presupposition).
+
+ToDO: introduce term of "loaded" question and add other examples
+
+TODO: add that this task will likely be redefined for turker to understand it 
+
+When deciding upon an exact taxonomy of labels for questions and answers, I plan to annotate a small number of question-answer pairs from randomly selected congressional hearings to ensure a representative sample, followed by a test-annotation phase. 
+
+\subsection{Crowd-sourcing multiple ground truths}
+The goal of the annotation is to arrive at multiple ground-truth labels, which is at odds with the typical single-label approach. This goal will be particularly problematic when gathering annotations from crowd-sourced workers. Common strategies for selecting high-quality workers such as weeding out those with lower agreement scores will not work as I expect (and want) disagreement. 
+TODO: add citations for multiple label turking. I will rely on ... to address these issues.
+
+\subsection{Experiment 1: Multi-label discourse} 
+I design a series of experiments that increase in complexity and build upon the assumptions of previous ones. In my first experiment, I exclusively focus on modeling discourse with multiple ground truths. The task is to predict all the valid labels for a given question-answer pair. I then propose more complex models that take into account context (i.e., labels of previous question-answer pairs) and the question type, on the intuition that these are correlated and predictive of the following set of labels. I here describe my proposed models.
+
+\begin{figure}
+\RawFloats
+\centering
+\begin{minipage}{.6\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{correlation.pdf}
+  \vspace{-2.5em}
+  \captionof{figure}{Linear dependence between $p$ and $frames$; red line is $y=x$.}
+  \label{fig:correlation}
+\end{minipage}%
+\hspace*{.04em}
+\begin{minipage}{.6\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{framerate.pdf}
+  \vspace{-2.5em}
+  \captionof{figure}{Linear dependence between $frames/duration$ and $framerate$, with $y=x$ line in red.}
+  \label{fig:framerate}
+\end{minipage}
+\end{figure}
+
+\noindent {\bf Model 1: Multiple labels.} In its simplest form, this problem can be framed as \emph{multi-label classification}. Here, the input is a question-answer pair and the output is a set of labels. This framework is often used in classifying longer documents (news articles) that are tagged with multiple keywords. Importantly, in this setting (and expectedly in my data as well) the labels are often correlated; for example, a document labeled as \textit{basketball} is likely to also be labelled as \textit{sports}. I propose to explore two models that account for this correlation: Classifier Chains (\textsc{CC}) \cite{Read:2011} and structured prediction of sets \cite{Rabinovich:2017}. \textsc{CC} transforms the problem into a \emph{chain} of binary classification tasks. This approach offers considerable flexibility because any binary classifier can be used, such as SVM or Naive Bayes, but the predictions are made sequentially. Structured set prediction, on the other hand, models features jointly and restricts the predicted set to be connected in a graph. This model uses structured max-margin during learning and set-F1 as the loss function (for order invariance).
+
+For evaluation, there are two groups of standard metrics that focus either on evaluating the predictions on an example-by-example basis (\emph{example-based}) or on a label-by-label basis (\emph{label-based}). The \emph{label-based} Hamming loss evaluates the fraction of labels that are predicted incorrectly (lower is better). The \emph{example-based} precision, recall and micro-F1 are averaged by the weight of each label. 
+
+\noindent {\bf Model 2: Multiple labels + context.} While the previous models account for correlations of labels within one question-answer pair, they do not consider the surrounding context. Knowing the labels of the previous question-answer pairs is helpful in predicting the current question-answer pair. In the Zuckerberg example in Table \ref{tab:example}, the first question-answer pair label set includes \texttt{request for information}, which naturally predicts \texttt{answer} in the following question-answer pair. In fact, the standard task of (single-label) dialog-act classification is typically framed as a \emph{sequence labeling} problem. For example, \citet{Joty:2018} employ a neural-CRF to capture these dependencies for speech acts in asynchronous conversations. I define my modified task as \emph{sequence multi-labeling}, where the model predicts multiple labels across a sequence of inputs. While I could adapt existing sequence-labeling model to handle multiple outputs, these will not capture the correlation between time steps. Interestingly, there is little work in NLP on predicting sequences of multiple labels (though not surprising since most multi-label applications are document classification tasks). I intend to investigate the SVM proposed in \citet{Li:2010} which learns a joint kernel to model both types of dependencies. This model is applied to the task of predicting the set of concept tags assigned to a given video shot in a sequence of video shots. 
+
+For evaluation, we use the standard multi-class metrics of Hamming loss and precision, recall, micro-F1.
+
+\noindent {\bf Model 3: Multiple labels + question type.} Within a question-answer pair, the nature of the question can help inform the labels. As noted earlier, ``loaded'' questions often lead to indirect answers. I propose a multi-task setting where question type classification is the auxiliary task and multi-label question-answer pair classification is the primary task. I frame this as a 
+TODO: not seq2seq, shared encoder
+-use question type as preprocessing to feed into DA classification
+
+sequence-to-sequence learning problem in a one-to-many setting (as described in \citet{Luong:2015}) where the encoder is shared between the two tasks.
+
+On the primary task, performance is evaluated using Hamming loss and precision, recall, micro-F1. On the auxiliary single-label classification task, the model is evaluated using accuracy and macro-F1.
+
+
+\section{Long Term} 
+\subsection{Experiment 2: Subjective discourse} The ultimate task is to determine how a person will interpret a discourse, given their biases. However, capturing biases is a  challenging task that significantly deviates from the core focus of this dissertation to show that discourse is ambiguous. Instead, I argue that we can inherently capture the bias of a given annotator by making predictions for that specific annotator. In particular, given a question-answer pair and the annotator id, the model must predict the label chosen by that annotator. This second task, however, relies on having enough labels from one single annotator, which may not be feasible, and instead annotators may need to be clustered together based on some measure of labeling similarity.
+
+\noindent {\bf Model.} Taking into account annotator biases is similar to the task of persona-based dialogue generation. In this setting, the model predicts the next utterance in a dialogue conditioned on some representation of the speaker. Here, the speaker is not a specific user, but a more general user type meant to generalize over a group of people. \citet{Zhang:2018} explore several generative and ranking models, finding that conditioning on the persona yields utterances that are likelier as measured by perplexity (although human judgements of consistency do not show significant differences). Because I do not have explicit information on the users, I plan to explore the approach in \citet{Li:2016} that learns an embedding for the speaker.
+
+TODO: evaluation
+
+\subsection{Experiment 3: Tracking conversation winners} 
+-gather judgements of conversational success at points in conversation
+-Zhang et al 2016: Conv flow
+-predict who won the debate, given conv flow and audience features
+-talking points identified by: word-usage (multinomial distr.) with highest divergence (log-odds ratio)
+-Logistic regression to determine which features are most predictive
+-Intelligence Squared debates, 3 rounds (IQ2)
+-applause and laughter for each round are used as positive reactions
+
+Potash & Rumshisky 2017:
+-use RNN:
+	-represent a turn using conf flow + audience features as in Zhang et al 2016
+	-pass to LSTM + attention, initialize hidden state with initial audience poll
+	-3 objectives: 
+		-minimize KL divergence between gold and predicted poll percentages
+		-minimize KL between gold & pred initial audience poll
+		-minimize KL between gold & pred audience reaction
+
+\section{Chapter Summary}
+
+TBD

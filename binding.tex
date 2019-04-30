@@ -133,10 +133,12 @@
 \thesisdedicationpage                %% Generate the dedication page.
 
 \phantomsection
-\addcontentsline {toc}{chapter}{Acknowledgments}  %% Force Acknowledgements to appear in contents
-\begin{thesisacknowledgments}        %% Use this to write your
-\input{ack}
-\end{thesisacknowledgments}          %% allowed in LaTeX2e par-mode.
+\addcontentsline {toc}{chapter}{}
+% TODO uncomment for thesis
+%\addcontentsline {toc}{chapter}{Acknowledgments}  %% Force Acknowledgements to appear in contents
+%\begin{thesisacknowledgments}        %% Use this to write your
+%\input{ack}
+%\end{thesisacknowledgments}          %% allowed in LaTeX2e par-mode.
 
 
 \begin{thesisabstract}               %% Use this to write your thesis abstract; it can be anything allowed in LaTeX2e par-mode.
@@ -163,8 +165,9 @@
 \bibliographystyle{utthesis2015}
 \bibliography{refs}
 
-\begin{thesisauthorvita}
-vita
-\end{thesisauthorvita}
+% TODO uncomment for thesis
+%\begin{thesisauthorvita}
+%vita
+%\end{thesisauthorvita}
 
 \end{document}
