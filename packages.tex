@@ -8,6 +8,11 @@
 \usepackage{graphicx}
 \usepackage{enumitem}
 \usepackage{booktabs}
+\usepackage{floatrow}
+% Table float box with bottom caption, box width adjusted to content
+\newfloatcommand{capbtabbox}{table}[][\FBwidth]
+\usepackage[font={small}]{caption}
+\usepackage{subcaption}
 %\setlist{itemsep=0px,parsep=0px,topsep=0.5\baselineskip,itemindent=2mm}%,leftmargin=15px}
 %\usepackage{wrapfig}
 %\usepackage{adjustbox}
@@ -24,7 +29,7 @@
 
 % SCR: my own imports
 \usepackage{alltt}
-\usepackage{subfig}
+%\usepackage{subfig}
 \usepackage{url}
 \usepackage{textcomp}
 \usepackage{comment}
@@ -78,7 +83,7 @@
 \newcommand{\newcite}[1]{\citet{#1}}
 
 
-\newcommand{\mytitle}{TBD}     %% The title of your thesis; use mixed-case.
+\newcommand{\mytitle}{Discourse analysis: moving from the traditional to the controversial}     %% The title of your thesis; use mixed-case.
 \newcommand{\myname}{Elisa Ferracane}    %% Your official UT name.
 
 
