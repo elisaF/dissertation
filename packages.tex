@@ -33,6 +33,20 @@
 \usepackage{url}
 \usepackage{textcomp}
 \usepackage{comment}
+\usepackage{linguex}
+% We want that the label to an example has also the chapter number
+\renewcommand{\Exarabic}{\thechapter.\arabic} 
+
+% We want to reset the ExNo counter at each chapter
+\usepackage{chngcntr}
+\counterwithin{ExNo}{chapter}
+
+
+\usepackage{cleveref}
+\crefname{ExNo}{example}{examples}
+
+% We want cross references of the form "example (1.1)"
+\creflabelformat{ExNo}{(#2#1#3)}
 
 % my figures
 \usepackage{tikz}
@@ -83,7 +97,7 @@
 \newcommand{\newcite}[1]{\citet{#1}}
 
 
-\newcommand{\mytitle}{Discourse analysis: moving from the traditional to the controversial}     %% The title of your thesis; use mixed-case.
+\newcommand{\mytitle}{Subjective Discourse Analysis}     %% The title of your thesis; use mixed-case.
 \newcommand{\myname}{Elisa Ferracane}    %% Your official UT name.
 
 
