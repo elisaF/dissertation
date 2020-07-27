@@ -1,32 +1,47 @@
 \chapter{Introduction}
 \label{ch:intro}
 
-This dissertation proposes annotation tasks and computational models to capture and predict the subjectivity of discourse.
 
-In my completed work, I explore how existing discourse theories can help NLP end tasks. I focus on coreference as a marker of salience for an information extraction task, and on embedding rhetorical relations (in the style of Rhetorical Structure Theory (RST); \citet{Mann:1988}) for an authorship attribution task. Both experiments confirm a wealth of prior work showing that discourse is helpful on downstream NLP tasks. Motivated by the limited annotated data, I attempt to annotate discourse structures in an unsupervised fashion, but find this approach fails. I then explore manual annotation, which reveals issues with existing discourse theories, and more so with how they were operationalized. First, discourse is described only from the perspective of the writer (not the reader) which can be problematic to infer; second, the bias of the annotator is not accounted for; third, only a single label is allowed to unambiguously describe the relation type between two propositions.\footnote{PDTB 3.0 allows multiple labels, but its intent is to capture \emph{simulatenous} interpretations, not separate, alternate ones.} 
+Understanding language often requires analysis beyond the word and sentence. Computational discourse fills this gap by describing how a text is structurally organized and how units of the text (such as sentences and clauses) are related to each other. We as humans make easy and ample use of discourse-level information: when you skim to the end of this chapter to find the meat of this thesis; when you understand that the second half of this sentence expands on the main idea of the first half. Making these kinds of global and local inferences is also critical for many NLP tasks, but much harder for computational models. My work aims to understand and overcome these challenges.     
 
-For the proposed work, I strive to address these three shortcomings. In line with the theoretical work presented in \citet{Asher:2018}, I assert discourse can be judged from the point of view of the \emph{reader}. Further, this third party reader is \emph{biased}, and their personal beliefs and preferences help determine which label they select. As a result, the discourse relation between two propositions can have \emph{multiple}, valid labels. I intend to operationalize parts of this theory by creating a new dataset and new tasks that embrace the ambiguity and subjectivity of discourse. I focus on argumentative dialogues covering polarizing topics that naturally lead to more frequent and more easily identifiable subjective interpretations. I further seek to label dialogue acts, a more intuitive task in this conversational setting. \citet{Asher:2001} show speech acts can be interpreted as rhetorical relations.
+Longer texts are a natural candidate to benefit from discourse, but they also pose significant difficulties for models to extract and compose long-range discourse signals. I explore different forms of abstracting discourse which are somewhat effective, but are also limited by the lack of annotated data that could help them scale better. In a low-resource setting, unsupervised learning is an attractive alternative, but I find the learned structures are not representative of discourse, showing the complex inferences in discourse require stronger signals and guidance to learn. I instead attempt to manually annotate discourse in a new domain, but annotators derive conflicting yet valid discourse structures. 
 
-\section{Proposal Outline}
-%\section{Thesis Outline}
+This result uncovered a less studied but more critical challenge: discourse is embedded in a social context and is thus \textbf{\emph{subjective}}, but current data and models expect only a single ground truth without room for differing interpretations. I thus pioneer how to capture and model discourse subjectivity using linguistic and extra-linguistic features. 
+
+\section{Thesis Outline}
 
 The remainder of this thesis is structured as follows:
 
-%In Chapter~\ref{ch:background}, ...
+In Chapter~\ref{ch:background}, I review the main discourse framework I use in much of my work, as well as pragmatic theories relevant for understanding subjective interpretations in conversation.
 
-In Chapter~\ref{ch:completed}, I present my completed work.
+In Chapter~\ref{ch:longertexts1}, I explore how to exploit cohesive devices as a signal of entity salience.
 
-In Chapter~\ref{ch:proposed}, I present my proposed work.
+In Chapter~\ref{ch:longertexts2}, I experiment with embedding rhetorical discourse relations into neural networks.
 
-%Chapter~\ref{ch:conclusion} concludes this proposal.
+In Chapter~\ref{ch:latent}, I analyze learned latent document structures which are not representative of discourse.
+
+In Chapter~\ref{ch:annotation}, I create a dataset of discourse-segmented medical texts to explore cross-domain discourse segmentation, and discuss issues when creating discourse trees for these texts.
+
+In Chapter~\ref{ch:subjective}, I create and analyze a dataset of subjective interpretations of conversational discourse.
+
+Chapter~\ref{ch:conclusion} concludes this.
 
 
-%\section{List of Thesis Contributions}
+\section{List of Thesis Contributions}
 
-%\noindent In this thesis, we make the following contributions:
+\noindent In this thesis, I make the following contributions:
 
-%\paragraph{Contrib1}
-%TBD
+\paragraph{Coreference features for salience}
+I propose a set of features based on coreference chains to extract salient information from text.
 
-%\paragraph{Contrib2}
-%TBD
+\paragraph{Discourse embeddings for rhetorical patterns}
+I present a method for embedding sequences of discourse relations in a neural network to capture rhetorical patterns of salient entities.
+
+\paragraph{Analysis of latent discourse structures}
+I present several experiments and measures to prove a proposed structured attention mechanism that resolves to a dependency tree is not representative of discourse.
+
+\paragraph{Dataset and cross-domain experiments for discourse segmentation}
+I create a dataset of discourse-segmented medical texts and show cross-domain segmentation is largely successful.
+
+\paragraph{Dataset and experiment on subjective interpretations in conversational discourse}
+I create a dataset of subjective conversation acts and intents for conversational discourse along with an experiment that begins to understand the nature of this subjectivity.

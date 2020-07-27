@@ -32,10 +32,10 @@
 \frenchspacing
 
 
-\renewcommand{\thesismonth}{May}     %% Your month of graduation.
-\renewcommand{\thesisyear}{2019}      %% Your year of graduation.
+\renewcommand{\thesismonth}{August}     %% Your month of graduation.
+\renewcommand{\thesisyear}{2020}      %% Your year of graduation.
 
-\renewcommand{\thesisauthorpreviousdegrees}{, B.S. Computer Engineering, M.A. Linguistics}
+\renewcommand{\thesisauthorpreviousdegrees}{, B.S. Comp. Eng., M.A. Linguistics}
                                      %% Your previous degrees, abbreviated;
                                      %% separate multiple degrees by commas.
 
@@ -69,7 +69,7 @@
                                      %% Your permanent address; use "\\" for
                                      %% linebreaks.
 
-\renewcommand{\thesisdedication}{tbd}
+\renewcommand{\thesisdedication}{To my family.}
                                      %% Your dedication, if you have one; use
                                      %% "\\" for linebreaks.
 
@@ -133,12 +133,10 @@
 \thesisdedicationpage                %% Generate the dedication page.
 
 \phantomsection
-\addcontentsline {toc}{chapter}{}
-% TODO uncomment for thesis
-%\addcontentsline {toc}{chapter}{Acknowledgments}  %% Force Acknowledgements to appear in contents
-%\begin{thesisacknowledgments}        %% Use this to write your
-%\input{ack}
-%\end{thesisacknowledgments}          %% allowed in LaTeX2e par-mode.
+\addcontentsline {toc}{chapter}{Acknowledgments}  %% Force Acknowledgements to appear in contents
+\begin{thesisacknowledgments}        %% Use this to write your
+\input{ack}
+\end{thesisacknowledgments}          %% allowed in LaTeX2e par-mode.
 
 
 \begin{thesisabstract}               %% Use this to write your thesis abstract; it can be anything allowed in LaTeX2e par-mode.
@@ -164,6 +162,7 @@
 \singlespace
 \bibliographystyle{utthesis2015}
 \bibliography{refs}
+
 
 % TODO uncomment for thesis
 %\begin{thesisauthorvita}

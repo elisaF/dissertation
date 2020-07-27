@@ -12,9 +12,10 @@
 % Table float box with bottom caption, box width adjusted to content
 \newfloatcommand{capbtabbox}{table}[][\FBwidth]
 \usepackage[font={small}]{caption}
+\usepackage{caption}
 \usepackage{subcaption}
 %\setlist{itemsep=0px,parsep=0px,topsep=0.5\baselineskip,itemindent=2mm}%,leftmargin=15px}
-%\usepackage{wrapfig}
+\usepackage{wrapfig}
 %\usepackage{adjustbox}
 %\usepackage{calc}
 %\usepackage{caption}
@@ -28,12 +29,15 @@
 %\usepackage[makeroom]{cancel}
 
 % SCR: my own imports
-\usepackage{alltt}
 %\usepackage{subfig}
 \usepackage{url}
 \usepackage{textcomp}
 \usepackage{comment}
 \usepackage{linguex}
+\usepackage{adjustbox}
+\usepackage{rotating}
+\usepackage{bm}
+\usepackage{tabularx}
 % We want that the label to an example has also the chapter number
 \renewcommand{\Exarabic}{\thechapter.\arabic} 
 
@@ -70,7 +74,11 @@
 }
 \hypersetup{linktocpage}
 
-
+%% Underline
+\usepackage[normalem]{ulem}
+\usepackage{contour}
+\renewcommand{\ULdepth}{1.8pt}
+\contourlength{0.8pt}
 
 %%%
 %%% Section styles
