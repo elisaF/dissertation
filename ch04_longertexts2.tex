@@ -80,8 +80,6 @@ The local coherence of a document is then defined on the basis of local entity t
 B\&L apply this model to a sentence ordering task, where the more coherent option, as evidenced by its transition probabilities, was chosen. In authorship attribution, texts are however assumed to already be coherent. F\&H14 instead hypothesize that an author unconsciously employs the same methods for describing entities as the discourse unfolds, resulting in discernible transition probability patterns across multiple of their texts. Indeed, F\&H14 find that adding the B\&L vectors increases the accuracy of AA by almost 1\% over a baseline lexico-syntactic model.
 \medskip
 
-\noindent\textbf{RST discourse relations.} F15 extends the notion of tracking salient entities to RST. Instead of using grammatical relations in the grid, RST discourse relations are specified. An RST discourse relation defines the relationship between two or more elementary discourse units (EDUs), which are spans of text that typically correspond to syntactic clauses. In a relation, an EDU can function as a nucleus (e.g., \texttt{result.N}) or as a satellite (e.g., \texttt{summary.S}). All the relations in a document then form a tree as in Figure \ref{fig:rstTree}.\footnote{For reasons of space, only the first sentence of the excerpt is illustrated.}
-
 \begin{figure}
 \vspace{-5em}
 \includegraphics[scale=0.3]{plots/longer2_rstTree.pdf}
@@ -89,6 +87,9 @@ B\&L apply this model to a sentence ordering task, where the more coherent optio
 \caption{RST tree for the first sentence of the excerpt in Table \ref{tab:sents}.}
 \label{fig:rstTree}
 \end{figure}
+\noindent\textbf{RST discourse relations.} F15 extends the notion of tracking salient entities to RST. Instead of using grammatical relations in the grid, RST discourse relations are specified. An RST discourse relation defines the relationship between two or more elementary discourse units (EDUs), which are spans of text that typically correspond to syntactic clauses. In a relation, an EDU can function as a nucleus (e.g., \texttt{result.N}) or as a satellite (e.g., \texttt{summary.S}). All the relations in a document then form a tree as in Figure \ref{fig:rstTree}.\footnote{For reasons of space, only the first sentence of the excerpt is illustrated.}
+
+
 
 %
 %\dirrel{}
@@ -108,7 +109,7 @@ B\&L apply this model to a sentence ordering task, where the more coherent optio
 %   \unit[txt4]{{and, in his younger days, lived pretty comfortably on a joint of a small incumbency and a snug little property of his own.}}
 %\end{rhetoricaltext}
 
-F15 finds that RST relations are more effective for AA than grammatical relations. In our work, we populate the entity-grid in the same way as F15's ``Shallow RST-style'' encoding, but use fine-grained instead of coarse-grained RST relations, and do not distinguish between intra-sentential and multi-sentential RST relations, or salient and non-salient entities. 
+F15 finds that RST relations are more effective for AA than grammatical relations. In our work, we populate the entity-grid in the same way as F15's ``Shallow RST-style'' encoding (which only considers relations that span the same sentence or two adjacent sentences), but use fine-grained instead of coarse-grained RST relations, and do not distinguish between intra-sentential and multi-sentential RST relations, or salient and non-salient entities. 
 We explore various featurization techniques using the coding scheme. 
 \medskip
 
@@ -155,7 +156,7 @@ We then apply the \emph{max-over-time} pooling \cite{Collobert:2011} to the feat
 \noindent
 \textbf{CNN2-PV}.
 This model (Figure \ref{fig:cnn2}, left+center) featurizes discourse information into a probability vector (PV). 
-The discourse features come in two flavors: (i) grammatical relations (GR), and (ii) RST discourse relations (RST)\footnote{Using RST Parser from \citet{Ji:2014}.}. For both types of discourse features, an entity grid is first constructed to identify salient entities\footnote{Using neural coreference resolver, dependency parser in Stanford Core NLP \cite{Clark:2016}.}. Recall each row in the grid is a sentence, and each column is a salient entity. The values of each cell in the grid are then populated differently, depending on which flavor of discourse feature is used. 
+The discourse features come in two flavors: (i) grammatical relations (GR), and (ii) RST discourse relations (RST)\footnote{Using the RST Parser from \citet{Ji:2014}.}. For both types of discourse features, an entity grid is first constructed to identify salient entities\footnote{Using the neural coreference resolver and dependency parser in Stanford Core NLP \cite{Clark:2016}.}. Recall each row in the grid is a sentence, and each column is a salient entity. The values of each cell in the grid are then populated differently, depending on which flavor of discourse feature is used. 
 
 For GR features, the entity grid is populated with the grammatical relation of each entity in each sentence. The entity grid is then collapsed into a single probability vector as shown in Table \ref{tab:vector}. The GR feature vector thus consists of a sequence of \emph{grammatical relation transitions} derived from the entity grid,
 e.g., $\langle\texttt{sx,xs,ss,\ldots}\rangle$. The vector is a distribution over all the grammatical role transitions, i.e., $\langle p(\texttt{sx}),p(\texttt{xs}),p(\texttt{ss}),\ldots\rangle$.
@@ -207,18 +208,18 @@ Dataset & \# authors & mean words/auth & range words/auth \\
 
 \noindent
 \textbf{novel-9}.
-This dataset was compiled by F\&H14: a collection of 19 novels by 9 nineteenth century British and American authors in the Project Gutenberg. To compare to F\&H14, we apply the same resampling method (F\&H14, Section 4.2) to correct the imbalance in authors by oversampling the texts of less-represented authors.
+This dataset was compiled by F\&H14: a collection of 19 novels by 9 nineteenth century British and American authors in Project Gutenberg. To compare to F\&H14, we apply the same resampling method (F\&H14, Section 4.2) to correct the imbalance in authors by oversampling the texts of less-represented authors.
 \medskip
 
 \noindent
 \textbf{novel-50}.
 This dataset extends novel-9, compiling the works of 50 randomly selected authors of the same period. 
-For each author, we randomly select 5 novels for a total 250 novels.
+For each author, we randomly select 5 novels for a total of 250 novels.
 \medskip
 
 \noindent
 \textbf{IMDB62}.
-IMDB62 consists of 62K movie reviews from 62 users (1,000 each) from the Internet Movie dataset, compiled by \newcite{Seroussi:2011}. Unlike the novel datasets, the reviews are considerably shorter, with a mean of 349 words per text.
+IMDB62 consists of 62K movie reviews from 62 users (1,000 each) from the Internet Movie dataset, compiled by \newcite{Seroussi:2011}. Unlike the novel datasets, the reviews are short, with a mean of 349 words per text.
 
 \subsection{Featurization}
 \label{subsec:featurization}
@@ -269,10 +270,10 @@ This results in sequences of discourse relations for the input entries.
 \label{subsec:experiments}
 
 \textbf{Baseline-dataset experiments}.
-All the baseline-dataset experiments are evaluated on novel-9. As a comparison to previous work (F15), we evaluate our models using a pairwise classification task with GR discourse features. In her model, each novel is partitioned into 1000-word chunks, and the model is evaluated with accuracy.\footnote{Averaged over all the author-author pair experiments.}
-Surpassing F15's SVM model by a large margin, we then further evaluate the more difficult multi-class task, i.e., all-class prediction simultaneously, with both GR and RST discourse features and the more robust F1 evaluation.
+All the baseline-dataset experiments are evaluated on novel-9. As a comparison to previous work (F15), we evaluate our models using a pairwise classification task with GR discourse features. In F15's model, each novel is partitioned into 1000-word chunks, and the model is evaluated with accuracy.\footnote{Averaged over all the author-author pair experiments.}
+Surpassing F15's SVM model by a large margin, we  further evaluate the more difficult multi-class task, i.e., all-class prediction simultaneously, with both GR and RST discourse features and the more robust F1 evaluation.
 In this multi-class task, we implement two SVMs to extend F15's SVM models:
-(i) SVM2: a linear-kernel SVM which takes char-bigrams as input, as our CNNs, and (ii) SVM2-PV: an updated SVM2 which takes also probability vector features.
+(i) SVM2: a linear-kernel SVM which takes char-bigrams as input, as our CNNs, and (ii) SVM2-PV: an updated SVM2 which takes also probability vector features derived from the entity grid transitions (either grammatical roles or RST discourse relations).
 %newcite{feng2015} featurizes discourse with BL local coherence (see Section \ref{sec:background})
 
 Further, we are interested in finding a performance threshold on the minimally-required input text length for discourse information to ``kick in''. 
@@ -299,10 +300,10 @@ Baseline & 49.8 \\
 SVM (LexSyn) & 85.5 \\
 SVM (LexSyn-PV) & 86.4 \\
 \midrule
-CNN2 & 99.5 \\
+CNN2$^\ast$ & 99.5 \\
 %& CNN2-DE (local) & \textbf{100.0} \\
 %& CNN2-DE (global) & \textbf{100.0} \\
-CNN2-PV & \textbf{99.8} \\
+CNN2-PV$^\ast$ & \textbf{99.8} \\
 %\midrule
 %\multirow{5}{*}{One-vs-all} & F15 Baseline & 20.0 \\
 %& F15 LexSyn & 47.9 \\
@@ -313,7 +314,7 @@ CNN2-PV & \textbf{99.8} \\
 %& CNN2-PV & \textbf{99.2} \\
 \bottomrule
 \end{tabular}}
-\caption{Accuracy for pairwise author classification on the novel-9 dataset, using either a dumb baseline, an SVM with and without discourse to replicate F15, or a bigram-character CNN (CNN2) with and without discourse.}
+\caption{Accuracy for pairwise author classification on the novel-9 dataset, using either a dumb baseline, an SVM with and without discourse to replicate F15, or a bigram-character CNN (CNN2) with and without discourse. ($^\ast$ indicates stat. sig. at p$<$0.005 compared to its SVM counterpart).}
 \label{tab-num1:exp1}
 \end{center}
 \end{table}
@@ -326,20 +327,20 @@ CNN2-PV & \textbf{99.8} \\
 \textsc{Disc.Type} & \textsc{Model} & \textsc{F1} \\
 \midrule
 \multirow{2}{*}{None} & SVM2 & 84.9 \\
-& CNN2 & 95.9 \\
+& CNN2$^\ast$ & 95.9 \\
 \midrule
 \multirow{4}{*}{GR} & SVM2-PV & 85.7 \\
-& CNN2-PV & 96.1 \\
-& CNN2-DE (local) & 97.0 \\
-& CNN2-DE (global) & 96.9 \\
+& CNN2-PV$^\ast$ & 96.1 \\
+& CNN2-DE$^\ast$ (local) & 97.0 \\
+& CNN2-DE$^\ast$ (global) & 96.9 \\
 \midrule
 \multirow{4}{*}{RST} & SVM2-PV & 85.9 \\
-& CNN2-PV & 96.3 \\
-& CNN2-DE (local) & 97.4 \\
-& CNN2-DE (global) & \textbf{98.5} \\
+& CNN2-PV$^\ast$ & 96.3 \\
+& CNN2-DE$^\ast$ (local) & 97.4 \\
+& CNN2-DE$^\ast$ (global) & \textbf{98.5} \\
 \bottomrule
 \end{tabular}}
-\caption{Macro-averaged F1 score for multi-class author classification on the novel-9 dataset, using either no discourse (None), grammatical relations (GR), or RST relations (RST). These experiments additionally include the Discourse Embedding (DE) models for GR and RST.}
+\caption{Macro-averaged F1 score for multi-class author classification on the novel-9 dataset, using either no discourse (None), grammatical relations (GR), or RST relations (RST). These experiments additionally include the Discourse Embedding (DE) models for GR and RST. ($^\ast$ indicates stat. sig. at p$<$0.005 compared to its SVM counterpart).}
 \label{tab-num2:exp1}
 \end{center}
 \end{table}
@@ -356,13 +357,13 @@ For the SVMs in the generalization-dataset experiments, we tuned the hyperparame
 \subsection{Results}
 \label{subsec:results}
 \textbf{Baseline-dataset experiments}.
-The results of the baseline-dataset experiments are reported in Table \ref{tab-num1:exp1}, \ref{tab-num2:exp1} and Figure \ref{fig:exp1-varying-sizes}. 
+The results of the baseline-dataset experiments are reported in Table \ref{tab-num1:exp1}- \ref{tab-num2:exp1} and Figure \ref{fig:exp1-varying-sizes}. 
 In Table \ref{tab-num1:exp1}, Baseline denotes the dumb baseline model which always predicts the more-represented author of the pair. 
 Both SVMs are from F15, and we report her results.
 SVM (LexSyn) takes character and word bi/trigrams and POS tags. 
 SVM (LexSyn-PV) additionally includes probability vectors, similar to our CNN2-PV.
 %In this experiment, we found that, with proper tuning and sufficient number of epochs, both CNN2-DE models converge to perfect performance. 
-In this part of the experiment, while the CNNs clear a large margin over SVMs (all differences are statistically significant at p<0.005), adding discourse in CNN2-PV brings only a small performance gain.
+In this part of the experiment, while the CNNs clear a large and significant margin over SVMs, adding discourse in CNN2-PV brings only a small performance gain.
 
 Table \ref{tab-num2:exp1} reports the results from the multi-class classification task, the more difficult task. 
 Here, probability vector features (i.e., PV) again fail to contribute much.
@@ -386,7 +387,7 @@ Where discourse features do help, the GR-based models achieve, on average, 1 ext
 
 \noindent
 \textbf{Generalization-dataset experiments}.
-Table \ref{tab-num3:exp2} summarizes the results of the generalization-dataset experiments. All reported statistical tests are t-test with a significance level of 0.05. First, we note that CNNs show a clear advantage over SVMs for all model variants on both datasets (confirmed significant for SVM2 vs. CNN2 with no discourse, SVM2-PV vs. CNN2-DE with GR and RST).
+Table \ref{tab-num3:exp2} summarizes the results of the generalization-dataset experiments. All reported statistical tests are t-test with a significance level of 0.05 (using the Bonferroni correction for multiple comparisons). First, we note that CNNs show a clear advantage over SVMs for all model variants on both datasets (confirmed significant for SVM2 vs. CNN2 with no discourse, SVM2-PV vs. CNN2-DE with GR and RST).
 On novel-50, most discourse-enhanced models significantly improve the performance of the baseline non-discourse CNN2 to varying degrees (significant for CNN2 with no discourse vs. CNN2-DE with GR and RST). 
 The clear pattern again emerges that RST features work better, with the best F1 score evidenced in the CNN2-DE (global) model (3.5 improvement in F1) (significant for CNN2-DE with GR vs. CNN2-DE with RST). 
 On IMDB62, as expected with short text inputs (mean=349 words/review), the discourse features in general do not add further contribution. Even the best model, CNN2-DE, brings only marginal improvement (not statistically significant), confirming our findings from varying the chunk size on novel-9, where discourse features did not help at this input size. However, the difference between the GR and RST variants for the IMDB CNN models are statistically significant.
@@ -463,7 +464,7 @@ Currently we only have empirical results on short novel chunks and movie reviews
 \noindent
 \textbf{Discourse embeddings}.
 It does not come as a surprise that discourse-embedding-based models perform better than their relation-probability-based peers.
-The former (i) leverages the weight learning of the entire computational graph of the CNN rather than only the softmax layer, as the PV models do, and (ii) provides a more fine-grained featurization of the discourse information. Rather than merely taking a probability over grammatical relation transitions (in GR) or discourse relation types (in RST), in DE-based models we learn the dependency between grammatical relation transitions/discourse relations through the $w$-sized filter sweeps. 
+The former (i) leverages the weight learning of the entire computational graph of the CNN rather than only the softmax layer, as the PV models do, and (ii) provides a more fine-grained featurization of the discourse information. Rather than merely taking a probability over grammatical relation transitions (in GR) or discourse relation types (in RST), in DE-based models we learn the dependency between grammatical relation transitions/discourse relations through the three $w$-sized filter sweeps (sizes $w=3,4,5$). 
 
 To further study the information encoded in the discourse embeddings, we performed \texttt{t-SNE} clustering \cite{vanDerMaaten:2008} on them, using the best performing model CNN2-DE (global). We examined the closest neighbors of each embedding, and observed that similar discourse relations tend to go together (e.g., \texttt{explanation} and \texttt{interpretation}; \texttt{consequence} and \texttt{result}). Some examples are given in Table \ref{tab:tsne}.
 However, it is unclear how this pattern helps improve classification performance.
@@ -477,7 +478,7 @@ In all the relevant experiments, global featurization showed a clear performance
 Recall that the creation of the grids (both GR and RST) depend on coreference chains of entities (Section \ref{sec:background}), and only the global reading scheme takes advantage of the coreference pattern whereas the local reading breaks the chains. 
 To find out whether coreference pattern is the key to the performance difference, we further ran a probe experiment where we read RST discourse relations in the order in which EDUs are arranged in the RST tree (i.e., left-to-right), and evaluated this model on novel-50 and IMDB62 with the same hyperparameter setting. 
 The F1 scores turned out to be very close to the CNN2-DE (local) model, at 97.5 and 90.9.
-Based on this finding, we tentatively confirm the importance of the coreference pattern, and intend to further investigate how exactly it matters for the classification performance. 
+Based on this finding, we tentatively confirm the importance of the coreference pattern, and intend to further investigate how exactly it matters for classification performance. 
 \medskip
 
 \noindent
@@ -485,7 +486,7 @@ Based on this finding, we tentatively confirm the importance of the coreference 
 RST features in general give higher performance gains than GR features (Table \ref{tab-num3:exp2}).
 The RST parser produces a tree of discourse relations for the input text, thus introducing a ``global view.''
 The GR features, on the other hand, are more restricted to a ``local view'' on entities between consecutive sentences. 
-While a deeper empirical investigation is needed, one can intuitively imagine that identifying authorship by focusing on the local transitions between grammatical relations (as in GR) is more difficult than observing how the entire text is organized (as in RST).\footnote{Note that, however, it is simpler to extract GR features, as we rely solely on a high-performance dependency parser, which is widely available, whereas for RST features, we need gold RST-labeled training data, which incurs higher cost and potentially relatively limited generalizability.}
+While a deeper empirical investigation is needed, one can intuitively imagine that identifying authorship by focusing on the local transitions between grammatical relations (as in GR) is more difficult than observing how the entire text is organized (as in RST).\footnote{Note that, however, it is simpler to extract GR features, as we rely solely on a high-performance dependency parser, whereas for RST features, we rely on an RST parser trained on the much smaller supervised dataset, RST Discourse TreeBank \cite{Carlson:2002}, which has potentially relatively limited generalizability.}
 \medskip
 
 \noindent

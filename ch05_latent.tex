@@ -39,11 +39,11 @@ We present two models: one for text classification, and one for sentence orderin
 \vspace{-0.2em}
 \caption{Model of \citet{Liu:2018} with the document-level portion (right) that composes sentences into a document representation.}
 \label{fig:model}
-\vspace{-0.9em}
+\vspace{-0.4em}
 \end{figure}
 
 
-\begin{table}[th!]
+\begin{table}[b]
 \small
 \centering
 \scalebox{0.65}{
@@ -60,7 +60,7 @@ L\&L(report.) & 68.6 & 76.5  & - & - & - \\
 \bottomrule
 \end{tabular}
 }
-\caption{Max\thinspace$|$\thinspace\ mean (standard deviation) accuracy on the test set averaged across four training runs with different initialization weights. Bolded numbers are within 1 standard deviation of the best performing model. L\&L(orig) uses the original L\&L code; L\&L(ours) includes the design change and bug fix. L\&L(reported) lists results reported by L\&L on a single training run.
+\caption{Max\thinspace$|$\thinspace\ mean (standard deviation) accuracy on the test set averaged across four training runs with different initialization weights. Bolded numbers are within 1 standard deviation of the best performing model. L\&L(orig) uses the original L\&L code; L\&L(ours) includes the design change and bug fix. L\&L(report.) lists results reported by L\&L on a single training run.
 }
 \label{tab:results_full}
 \end{table}
@@ -251,7 +251,7 @@ norm. arc length & 0.433 &0.397 &0.420 &0.396 &0.426\\
 \end{table}
 
 \medskip
-\noindent\textbf{Trees do not learn discourse.} Although document  level structured attention provides little benefit in performance, we probe whether the model could still be learning some discourse. We visually inspect the learned $\mathbf{f_{best}}$ trees and in Table \ref{tab:trees_full} we report statistics on them (see Appendix \ref{app:latent} Table \ref{tab:trees_full_orig} for similar results with the original code).
+\noindent\textbf{Trees do not learn discourse structures.} Although document  level structured attention provides little benefit in performance, we probe whether the model could still be learning some discourse structures. We visually inspect the learned $\mathbf{f_{best}}$ trees and in Table \ref{tab:trees_full} we report statistics on them (see Appendix \ref{app:latent} Table \ref{tab:trees_full_orig} for similar results with the original code).
 
 The visual inspection (Figure \ref{fig:tree2}) reveals shallow trees (also reported in L\&L), but furthermore the trees have little to no structure.\footnote{While shallow trees are expected in PDTB-style discourse, even these trees would exhibit meaningful structure between adjacent sentences, which is entirely absent here. %We leave an in-depth comparison to PDTB for future work.
 } We observe an interesting pattern where the model picks one of the first two or last two sentences as the root, and all other sentences are children of that node. We label these trees as `vacuous' and the strength of this pattern is  reflected in the tree statistics (Table \ref{tab:trees_full}). The height of trees is small, showing the trees are shallow. The proportion of leaf nodes is high, that is, most nodes have no children. Finally, 
@@ -282,7 +282,7 @@ In Yelp, we find root words often express sentiment and explicitly mention the n
 
 % For Yelp, we additionally find sentiment-bearing words occur significantly more frequently in the root sentence as compared to other sentences (t-test, p$<$0.001).\footnote{Sentiment scores were calculated using the model in \citet{Hutto:2014}, as packaged in NLTK.}
 
-\section{Learning better structure} We next probe whether the structure in L\&L can be improved to be more linguistically appropriate, while still performing well on the end task. Given that structured attention helps only on WQTC and learns vacuous trees less frequently, we focus on this task. We experiment with three modifications. First, we remove the document-level biLSTM since it performs a level of composition that might prevent the attention from learning the true structure. Second, we note equation \ref{eq:children} captures possible children only at one level of the tree, but not possible subtrees. We thus perform an additional level of percolation over the marginals to incorporate the children's children of the tree. That is, after equation \ref{eq:update}, we calculate:
+\section{Learning better structure} We next probe whether the structure in L\&L can be improved to be more linguistically appropriate, while still performing well on the end task. Given that structured attention helps only on WQTC and is the only task where the model learns vacuous trees less frequently, we focus on this task. We experiment with three modifications. First, we remove the document-level biLSTM since it performs a level of composition that might prevent the attention from learning the true structure. Second, we note equation \ref{eq:children} captures possible children only at one level of the tree, but not possible subtrees. We thus perform an additional level of percolation over the marginals to incorporate the children's children of the tree. That is, after equation \ref{eq:update}, we calculate:
 \vspace{-0.5em}
 \begin{equation}
 c'_i = \sum^{n}_{k=1}a_{ik}e'_{i}\hspace{1pt};\hspace{20pt}e''_i = \tanh(W_r[e'_i, c'_i])
@@ -314,14 +314,14 @@ parsed RST &- &25.084 &0.567 &0.063 &0\%\\
 \label{tab:results_deeper}
 \end{table}
 
-We include ablations of these modifications and additionally derive RST discourse dependency trees,\footnote{We use the RST parser in \citet{Feng:2014} and follow \citet{Hirao:2013} to derive discourse dependency trees.} collapsing intrasentential nodes, as an approximation to the ground truth.
+We include ablations of these modifications and additionally derive RST discourse dependency trees,\footnote{We use the RST parser from \citet{Feng:2014} and follow \citet{Hirao:2013} to derive discourse dependency trees.} collapsing intrasentential nodes, as an approximation to the ground truth.
 %\footnote{Subtrees sometimes cross sentence boundaries (`leaky' boundaries in \citet{vanderVliet:2011}), but \citet{Joty:xxxx} found these occur in only 5\% of RST-DT.}
 
 The results (Table \ref{tab:results_deeper}) show that simply removing the biLSTM produces trees with more structure (deeper trees, fewer leaf nodes, shorter arc lengths, and less vacuous trees), confirming our intuition that it was doing the work for the structured attention. However, it also results in lower performance. Changing the pooling layer from max to  weighted sum both hurts performance and results in shallower trees (though still deeper than Full), which we attribute to this layer still being a pooling function. Introducing an extra level of tree percolation yields better trees but also a drop in performance. Finally, using 4 levels of percolation both reaches the accuracy of Full and retains the more structured trees.\footnote{More than 4 levels caused training to become unstable.} We hypothesize accuracy doesn't surpass Full because this change also introduces extra parameters for the model to learn.
 
 %while the model variants result in comparable or lower performance, simply removing the biLSTM produces surprisingly deeper trees, confirming our intuition that it was doing the work for the structured attention. Introducing an extra level of tree percolation has little impact on either performance or tree structure, but with 4 levels, possibly because this change also introduces extra parameters for the model to learn. With 4 levels of percolation, performance reaches that of the Full model at the expense of slightly shallower trees.\footnote{More than 4 levels caused training to become unstable.} Finally, changing the pooling layer from max to  weighted sum both hurts performance and results in shallower trees (though still deeper than full), which we attribute to this layer still being a pooling function.
 
-While our results are a step in the right direction, the structures are decidedly not discourse when compared to the parsed RST dependency trees, which are far deeper with far fewer leaf nodes, shorter arcs and no vacuous trees. Importantly, the tree statistics show the structures do not follow the typical right-branching structure in news: the trees are shallow, nodes often connect to the root instead of a more immediate parent, and the vast majority of nodes have no children. In work concurrent to ours, \citet{Liu:2019} proposes a new iterative algorithm for the structured attention (in the same spirit as our extra percolations) and applies it to a transformer-based summarization model. However, even these induced trees are not comparable to RST discourse trees. The induced trees are multi-rooted by design (each root is a summary sentence) which is unusual for RST;\footnote{Less than 25\% of trees in the RST Discourse Treebank \cite{Carlson:2001} have more than 1 root; less than 8\% have more than 2 roots.} their reported tree height and edge agreement with RST trees are low.
+While our results are a step in the right direction, the structures are decidedly not discourse when compared to the parsed RST dependency trees, which are far deeper with far fewer leaf nodes, shorter arcs and no vacuous trees. Importantly, the tree statistics show the structures do not follow the typical right-branching structure in news: the trees are shallow, nodes often connect to the root instead of a more immediate parent, and the vast majority of nodes have no children. In work concurrent to ours, \citet{Liu:2019} proposes a new iterative algorithm for the structured attention (in the same spirit as our extra percolations) and applies it to a transformer-based summarization model. However, even these induced trees are not comparable to RST discourse trees. The induced trees are multi-rooted by design (each root is a summary sentence) which is unusual for RST;\footnote{Less than 25\% of trees in the RST Discourse Treebank \cite{Carlson:2001} have more than 1 root; less than 8\% have more than 2 roots.} and their reported tree height and edge agreement with RST trees are low.
 
 \section{Chapter Summary}
 In this chapter, we evaluate structured attention in document representations as a proxy for discourse structure. We first find structured attention at the document level is largely unhelpful, and second it instead captures lexical cues resulting in vacuous trees with little structure. 
