@@ -259,14 +259,14 @@ Due to an error creating annotation batches, 4 annotators were asked to annotate
 \section{Training details}
 \label{sec:app_training}
 
-All models are trained on an NVIDIA Quadro RTX 6000 GPU. For hyperparameter tuning, we use early stopping based on development macro-F1 with a patience of 5 epochs and average results across 3 runs with different random initializations. For test, we train for 30 epochs and then evaluate on the test fold. If training does not improve by 40\% in the first 10 epochs, then training is restarted.
+All models are trained on an NVIDIA Quadro RTX 6000 GPU. For hyperparameter tuning, we use early stopping based on development macro-F1 with a patience of 10 epochs and average results across 3 runs with different random initializations. For test, we train for 30 epochs and then evaluate on the test fold. If training does not improve by 40\% in the first 15 epochs, then training is restarted. We repeat this process for each test set across the 4 folds.
 
-For \textsc{RoBERTa} and all models that build on top of it, we use a learning rate of 3e-5, a warmup proportion of 0.1, a weight decay of 0.1 and batch size of 8, max sequence length of 512.
+For the \textsc{RoBERTa} classification task and all models that build on top of it, we use a learning rate of 1e-5, a warmup proportion of 0.01, no weight decay and batch size of 8, max sequence length of 512. For the \textsc{RoBERTa} regression task, we use a learning rate of 5e-5, a warmup proportion of 0.1 and weight decay of 0.01 (batch size and max sequence length are unchanged).
 
 \section{Model variants}
 \label{sec:app_variants}
 
-In Table \ref{tab:other_models} include results with additional baselines, pretrained language models and adding other forms of context.
+In Table \ref{tab:other_models} include results with additional baselines, pretrained language models and adding other forms of context to the \textsc{Hierarchical} model.
 
 \begin{table}[t]
 \centering
@@ -275,18 +275,18 @@ In Table \ref{tab:other_models} include results with additional baselines, pretr
 \toprule
 Model & macros-F1\\
 \midrule
-Convolutional Neural Network &48.13 (0.18) \\
-Hierarchical Attention Network &43.47 (0.07)\\
+Regularized LSTM &42.98 (0.07) \\
+Hierarchical Attention Network &43.05 (0.12)\\
 \midrule
-Albert &55.70 (0.02)\\
-ELECTRA &56.46 (0.01)\\
+ALBERT &55.88 (0.08)\\
+ELECTRA &55.83 (0.05)\\
 \midrule
-+Entire Question &53.38 (0.22)\\
-+All Questions &56.26 (0.04) \\
-+Question Intents &57.47 (0.18)\\
-+Fine-grained Witness Sentiment &62.01 (0.02)\\
-+Fine-grained Questioner Sentiment &57.72 (0.13)\\
-+Coarse-grained Questioner Sentiment &58.90 (0.05)\\
++Entire Question &52.37 (0.36)\\
++Last Interrogative Sentence &55.75 (0.28) \\
++Question Intents &58.66 (0.11)\\
++Fine-grained Witness Sentiment &59.70 (0.03)\\
++Fine-grained Questioner Sentiment &56.41 (0.27)\\
++Coarse-grained Questioner Sentiment &56.61 (0.28)\\
 \bottomrule
 \end{tabular}
 \caption{Results on additional baselines (top), pretrained language models (middle), and incorporating other contexts.}
