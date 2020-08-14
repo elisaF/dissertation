@@ -1,8 +1,6 @@
 \chapter{Learning discourse structure: Annotation}
 \label{ch:annotation}
-In this chapter, I approach the data scarcity problem for learning discourse structure by annotating discourse in a new domain.
-
-Work in this chapter has been published in \newcite{Ferracane:2019:naacl}.
+In this chapter, I approach the data scarcity problem for learning discourse structure by annotating discourse in a new domain.\footnote{Work in this chapter with the exception of Section \ref{sec:anno_rst_trees} has been published in \newcite{Ferracane:2019:acl}, where my co-author Titan Page was the second annotator for the corpus and he helped with the experiments.}
 
 \section{Chapter Overview}
 
@@ -274,6 +272,7 @@ However, a future avenue of research would be to first understand what impact th
 \end{figure}
 
 \section{Preliminary RST Tree results}
+\label{sec:anno_rst_trees}
 We present preliminary results of the subsequent step in RST-style discourse parsing of building the discourse trees. While the segmentation step yielded high agreement, the annotators often derived differing yet valid structures. In some cases, the differences were minor such as disagreement on how a particular relation should be labeled, as in Figure \ref{fig:anno_rst_conflicting_labels}. More often, though, the differences yielded vastly different trees as a result of disagreements in how the relations should be grouped, which naturally cascades into downstream agreements on relation labeling. Figure \ref{fig:anno_rst_conflicting_trees} illustrates an example where the first annotator interpreted the writer's mention of their earlier studies in EDU 1C as further elaboration on the problem they are trying to address in the current study, described in 1B. The second annotator, however, interpreted the mention of earlier work as background for the proposed solution in EDU 1D. We agreed both interpretations were valid, and may partly reflect the annotators' differing annotation approaches. The first annotator used a bottom-up approach, whereas the second used a top-down approach. In fact, these disagreements were also seen in the construction of the RST-DT \cite{Carlson:2001}, and the RST authors themselves recognize multiple analyses are ``normal'' and can be due to differences in ``plausibility judgments'' of the RST analysts \cite{Mann:1992}. 
 
 \begin{figure}
